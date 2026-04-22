@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Internal tooling
+.sixth/
+
+# Secrets — NEVER commit real Firebase keys
+firebase-config.js
+
+# Node (if ever added)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
