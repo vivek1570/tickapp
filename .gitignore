@@ -21,3 +21,7 @@ package-lock.json
 
 # Logs
 *.log
+
+# docs
+ci_cd.md
+walkthrough.md
