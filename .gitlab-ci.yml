@@ -1,0 +1,30 @@
+# GitLab CI/CD Pipeline — Deploy to GitLab Pages
+# Equivalent of GitHub Actions .github/workflows/deploy.yml
+
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+    # Step 1: Inject firebase-config.js from CI/CD variable
+    - |
+      echo "window.FIREBASE_CONFIG = ${FIREBASE_CONFIG};" > firebase-config.js
+
+    # Step 2: Copy everything into the "public/" directory
+    # (GitLab Pages REQUIRES output to be in a folder named "public/")
+    - mkdir -p public
+    - cp index.html public/
+    - cp styles.css public/
+    - cp app.js public/
+    - cp firebase-config.js public/
+
+    # Step 3: Copy any additional directories/files
+    - cp -r files public/ 2>/dev/null || true
+
+  artifacts:
+    paths:
+      - public
+
+  rules:
+    # Only deploy on pushes to main branch
+    - if: $CI_COMMIT_BRANCH == "main"
