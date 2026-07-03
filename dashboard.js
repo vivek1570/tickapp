@@ -100,7 +100,8 @@
     function calculateMemberSummary(member) {
         const activeMonths = getActiveMonths(member);
         const monthlyAmount = state.settings.monthlyAmount;
-        const totalExpected = activeMonths.length * monthlyAmount;
+        // const totalExpected = activeMonths.length * monthlyAmount;
+        const totalExpected = 5000;
 
         let totalPaid = 0;
         let paidMonths = 0;
@@ -186,10 +187,14 @@
         }
 
         // Calculate summaries
-        const summaries = state.members.map(m => calculateMemberSummary(m));
+        // const summaries = state.members.map(m => calculateMemberSummary(m));
+        const summaries = state.members
+            .map(m => calculateMemberSummary(m))
+            .sort((a, b) => b.totalPaid - a.totalPaid);
+        // console.log(summaries)
 
         // Sort: most pending first
-        summaries.sort((a, b) => b.pending - a.pending);
+        // summaries.sort((a, b) => b.pending - a.pending);
 
         // Grand totals
         let grandExpected = 0, grandPaid = 0, grandPending = 0;
