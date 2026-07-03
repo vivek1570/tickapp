@@ -66,6 +66,15 @@
             d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
 
+    // Check if a member is active in a given month key (e.g., '2026-07')
+    function isMemberActive(member, mk) {
+        console.log(member)
+        if (!member.startMonth && !member.endMonth) return true; // no range set = always active
+        if (member.startMonth && mk < member.startMonth) return false;
+        if (member.endMonth && mk > member.endMonth) return false;
+        return true;
+    }
+
     // ===== Firebase Persist =====
     async function persistToFirebase() {
         if (!useFirebase) return;
@@ -155,14 +164,16 @@
     function renderStats() {
         const mk = monthKey();
         const monthPayments = state.payments[mk] || {};
+        const activeMembers = state.members.filter(m => isMemberActive(m, mk));
+        // console.log('Active members:', activeMembers);
         let paidCount = 0, totalCollected = 0;
-        state.members.forEach(m => {
+        activeMembers.forEach(m => {
             const p = monthPayments[m.id];
             if (p && p.paid) { paidCount++; totalCollected += (p.amount || state.settings.monthlyAmount); }
         });
-        document.getElementById('totalMembers').textContent = state.members.length;
+        document.getElementById('totalMembers').textContent = activeMembers.length;
         document.getElementById('paidCount').textContent = paidCount;
-        document.getElementById('pendingCount').textContent = Math.max(0, state.members.length - paidCount);
+        document.getElementById('pendingCount').textContent = Math.max(0, activeMembers.length - paidCount);
         document.getElementById('totalCollected').textContent = `₹${totalCollected.toLocaleString('en-IN')}`;
     }
 
@@ -178,16 +189,18 @@
         const empty = document.getElementById('emptyState');
         grid.innerHTML = '';
 
-        if (state.members.length === 0) {
+        const mk = monthKey();
+        const activeMembers = state.members.filter(m => isMemberActive(m, mk));
+
+        if (activeMembers.length === 0) {
             empty.classList.add('visible');
             return;
         }
         empty.classList.remove('visible');
 
-        const mk = monthKey();
         const monthPayments = state.payments[mk] || {};
 
-        state.members.forEach((member, i) => {
+        activeMembers.forEach((member, i) => {
             const p = monthPayments[member.id];
             const isPaid = p && p.paid;
             const paidAmount = p ? p.amount : 0;
@@ -293,38 +306,103 @@
         state.members.forEach(member => {
             const item = document.createElement('div');
             item.className = 'admin-member-item';
-            item.innerHTML = `
-                <div>
-                    <div class="member-name">${member.name}</div>
-                    ${member.phone ? `<div class="member-phone">${member.phone}</div>` : ''}
-                </div>
-            `;
+            let memberDetails = `<div class="member-name">${member.name}</div>`;
+            if (member.phone) memberDetails += `<div class="member-phone">${member.phone}</div>`;
+            if (member.startMonth || member.endMonth) {
+                const from = member.startMonth || '—';
+                const to = member.endMonth || 'ongoing';
+                memberDetails += `<div class="member-phone" style="font-size:0.72rem;opacity:0.7">📅 ${from} → ${to}</div>`;
+            } else {
+                memberDetails += `<div class="member-phone" style="font-size:0.72rem;opacity:0.5">📅 No date range set</div>`;
+            }
+            item.innerHTML = `<div>${memberDetails}</div>`;
+
+            const btnGroup = document.createElement('div');
+            btnGroup.style.cssText = 'display:flex;gap:4px;align-items:center;';
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'remove-member-btn';
+            editBtn.title = 'Edit membership dates';
+            editBtn.style.cssText = 'background:rgba(99,102,241,0.15);color:#6366f1;';
+            editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            editBtn.addEventListener('click', () => editMember(member.id));
+
             const removeBtn = document.createElement('button');
             removeBtn.className = 'remove-member-btn';
             removeBtn.title = 'Remove member';
             removeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
             removeBtn.addEventListener('click', () => removeMember(member.id));
-            item.appendChild(removeBtn);
+
+            btnGroup.appendChild(editBtn);
+            btnGroup.appendChild(removeBtn);
+            item.appendChild(btnGroup);
             list.appendChild(item);
         });
+    }
+
+    // ===== Edit Member (set date range) =====
+    function editMember(id) {
+        const member = state.members.find(m => m.id === id);
+        if (!member) return;
+
+        const startMonth = prompt(
+            `Set START month for "${member.name}" (format: YYYY-MM, e.g., 2026-07).\nLeave empty to remove start date.`,
+            member.startMonth || ''
+        );
+        if (startMonth === null) return;
+
+        const endMonth = prompt(
+            `Set END month for "${member.name}" (format: YYYY-MM, e.g., 2026-12).\nLeave empty for ongoing (no end date).`,
+            member.endMonth || ''
+        );
+        if (endMonth === null) return;
+
+        const monthRegex = /^\d{4}-\d{2}$/;
+        if (startMonth && !monthRegex.test(startMonth)) {
+            showToast('Invalid start month format. Use YYYY-MM (e.g., 2026-07)', 'error'); return;
+        }
+        if (endMonth && !monthRegex.test(endMonth)) {
+            showToast('Invalid end month format. Use YYYY-MM (e.g., 2026-12)', 'error'); return;
+        }
+        if (startMonth && endMonth && endMonth < startMonth) {
+            showToast('End month cannot be before start month', 'error'); return;
+        }
+
+        member.startMonth = startMonth;
+        member.endMonth = endMonth;
+        const rangeInfo = startMonth ? `${startMonth} to ${endMonth || 'ongoing'}` : 'always active';
+        addLog('member', `Updated "${member.name}" membership: ${rangeInfo}`);
+        persist();
+        renderAll();
+        showToast(`${member.name} dates updated!`, 'success');
     }
 
     // ===== Add Member =====
     function addMember() {
         const nameInput = document.getElementById('memberNameInput');
         const phoneInput = document.getElementById('memberPhoneInput');
+        const startMonthInput = document.getElementById('startMonth');
+        const endMonthInput = document.getElementById('endMonth');
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
+        const startMonth = startMonthInput.value || ''; // e.g., '2026-07'
+        const endMonth = endMonthInput.value || '';
         if (!name) { showToast('Please enter a name', 'error'); return; }
         if (state.members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
             showToast('Member already exists', 'error'); return;
         }
-        const member = { id: genId(), name, phone, addedAt: new Date().toISOString() };
+        if (startMonth && endMonth && endMonth < startMonth) {
+            showToast('End month cannot be before start month', 'error'); return;
+        }
+        const member = { id: genId(), name, phone, startMonth, endMonth, addedAt: new Date().toISOString() };
         state.members.push(member);
-        addLog('member', `Added member "${name}"`);
+        const rangeInfo = startMonth ? ` (${startMonth} to ${endMonth || 'ongoing'})` : '';
+        addLog('member', `Added member "${name}"${rangeInfo}`);
         persist();
         nameInput.value = '';
         phoneInput.value = '';
+        startMonthInput.value = '';
+        endMonthInput.value = '';
         showToast(`${name} added!`, 'success');
         renderAll();
     }

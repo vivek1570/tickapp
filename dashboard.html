@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Dashboard — Group Payment Tracker</title>
+    <meta name="description" content="View each member's total payment summary — paid, pending, and overall progress.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ===== Dashboard-specific Styles ===== */
+        .dashboard-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dashboard-header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: var(--font);
+        }
+
+        .back-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        /* Summary Cards */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .summary-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .summary-card .card-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .summary-card .card-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .card-value.green { color: var(--accent); }
+        .card-value.red { color: var(--danger); }
+        .card-value.blue { color: #6366f1; }
+        .card-value.yellow { color: var(--warning); }
+
+        /* Member Table */
+        .table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .table-title {
+            padding: 16px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title .member-count {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .dashboard-table thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.02);
+            white-space: nowrap;
+        }
+
+        .dashboard-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .dashboard-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .dashboard-table tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .dashboard-table td {
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            vertical-align: middle;
+        }
+
+        .dashboard-table .member-name-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .dashboard-table .member-phone-cell {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .dashboard-table .member-dates-cell {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .amount-paid {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .amount-pending {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .amount-total {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            min-width: 100px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 99px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+        }
+
+        .progress-bar-fill.low {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+        }
+
+        .progress-bar-fill.mid {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+        }
+
+        .progress-bar-fill.high {
+            background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+        }
+
+        .progress-bar-fill.full {
+            background: linear-gradient(90deg, #059669, var(--accent));
+        }
+
+        .progress-text {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-badge.complete {
+            background: var(--success-bg);
+            color: var(--accent);
+        }
+
+        .status-badge.partial {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--warning);
+        }
+
+        .status-badge.none {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* Loading */
+        .dashboard-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .dashboard-loading .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .dashboard-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .dashboard-empty svg {
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .dashboard-table thead { display: none; }
+            .dashboard-table tbody tr {
+                display: block;
+                padding: 16px;
+                margin-bottom: 8px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+            }
+            .dashboard-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border: none;
+            }
+            .dashboard-table td::before {
+                content: attr(data-label);
+                font-size: 0.72rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-muted);
+                margin-right: 12px;
+            }
+            .summary-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Totals row */
+        .dashboard-table tfoot td {
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-top: 2px solid var(--border-hover);
+            background: rgba(255, 255, 255, 0.02);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating particles background -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="app-title">Payment Dashboard</h1>
+                    <p class="app-subtitle" id="groupNameDisplay">WhatsApp Group</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="back-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Back to Tracker
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Loading State -->
+        <div id="dashboardLoading" class="dashboard-loading">
+            <div class="spinner"></div>
+            Loading payment data...
+        </div>
+
+        <!-- Dashboard Content (hidden until loaded) -->
+        <div id="dashboardContent" style="display:none;">
+            <!-- Summary Cards -->
+            <div class="summary-row" id="summaryCards">
+                <div class="summary-card">
+                    <div class="card-value blue" id="summaryTotalMembers">0</div>
+                    <div class="card-label">Total Members</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value green" id="summaryTotalPaid">₹0</div>
+                    <div class="card-label">Total Collected</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value red" id="summaryTotalPending">₹0</div>
+                    <div class="card-label">Total Pending</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value yellow" id="summaryOverallPercent">0%</div>
+                    <div class="card-label">Overall Progress</div>
+                </div>
+            </div>
+
+            <!-- Members Table -->
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <span>Member Payment Summary</span>
+                    <span class="member-count" id="tableCount">0 members</span>
+                </div>
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member</th>
+                            <th>Active Months</th>
+                            <th>Total Expected</th>
+                            <th>Total Paid</th>
+                            <th>Pending</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardTableBody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                    <tfoot id="dashboardTableFoot">
+                        <!-- Totals row -->
+                    </tfoot>
+                </table>
+
+                <!-- Empty state -->
+                <div id="dashboardEmpty" class="dashboard-empty" style="display:none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <p>No members found. Add members from the main tracker.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

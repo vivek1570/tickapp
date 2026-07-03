@@ -35,6 +35,15 @@
                 </div>
             </div>
             <div class="header-actions">
+                <a href="dashboard.html" class="btn btn-ghost" id="dashboardBtn" title="Payment Dashboard" style="text-decoration:none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <span class="btn-label">Dashboard</span>
+                </a>
                 <button class="btn btn-ghost" id="activityLogBtn" title="Activity Log">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -220,6 +229,15 @@
                     <label for="memberPhoneInput">Phone (optional)</label>
                     <input type="tel" id="memberPhoneInput" class="form-input" placeholder="e.g., 9876543210">
                 </div>
+                <div class="form-group">
+                    <label for="startMonth">Membership Start</label>
+                    <input type="month" id="startMonth" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="endMonth">Membership End</label>
+                    <input type="month" id="endMonth" class="form-input">
+                </div>
                 <button class="btn btn-success btn-full" id="addMemberBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
@@ -272,7 +290,8 @@
             <div class="admin-section">
                 <button class="btn btn-danger btn-full" id="logoutAdminBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     Logout
                 </button>
