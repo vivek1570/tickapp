@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Payment Tracker — WhatsApp Tick App</title>
-    <meta name="description" content="Track monthly group payments with a simple, transparent tick-based interface. No login required for members.">
+    <meta name="description"
+        content="Track monthly group payments with a simple, transparent tick-based interface. No login required for members.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Floating particles background -->
     <div class="bg-particles" id="bgParticles"></div>
@@ -20,8 +24,9 @@
             <div class="logo-section">
                 <div class="logo-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
                     </svg>
                 </div>
                 <div>
@@ -32,20 +37,23 @@
             <div class="header-actions">
                 <button class="btn btn-ghost" id="activityLogBtn" title="Activity Log">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
                     </svg>
                     <span class="btn-label">Log</span>
                 </button>
                 <button class="btn btn-ghost" id="exportBtn" title="Export Data">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span class="btn-label">Export</span>
                 </button>
                 <button class="btn btn-primary" id="adminToggleBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
                     <span class="btn-label">Admin</span>
                 </button>
@@ -58,9 +66,11 @@
         <div class="stat-card">
             <div class="stat-icon members-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
+                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
                 </svg>
             </div>
             <div>
@@ -71,8 +81,9 @@
         <div class="stat-card">
             <div class="stat-icon paid-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
                 </svg>
             </div>
             <div>
@@ -83,8 +94,8 @@
         <div class="stat-card">
             <div class="stat-icon pending-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 </svg>
             </div>
             <div>
@@ -95,7 +106,8 @@
         <div class="stat-card">
             <div class="stat-icon amount-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
             <div>
@@ -109,7 +121,8 @@
     <section class="month-selector-section">
         <button class="month-nav-btn" id="prevMonth">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
             </svg>
         </button>
         <div class="month-display">
@@ -118,7 +131,8 @@
         </div>
         <button class="month-nav-btn" id="nextMonth">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
             </svg>
         </button>
     </section>
@@ -131,9 +145,11 @@
         <div class="empty-state" id="emptyState">
             <div class="empty-icon">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
-                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" />
+                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" />
                 </svg>
             </div>
             <h3>No Members Yet</h3>
@@ -151,14 +167,17 @@
             <div class="modal-body">
                 <p class="modal-desc">Enter the admin PIN to manage members and payments.</p>
                 <div class="pin-input-group">
-                    <input type="password" class="pin-input" id="pinInput" maxlength="6" placeholder="Enter PIN" autocomplete="off">
+                    <input type="password" class="pin-input" id="pinInput" maxlength="6" placeholder="Enter PIN"
+                        autocomplete="off">
                 </div>
                 <p class="pin-hint" id="pinHint"></p>
                 <div class="first-time-setup" id="firstTimeSetup">
                     <div class="setup-badge">🎉 First Time Setup</div>
                     <p>Set a PIN (4-6 digits) to protect admin access.</p>
-                    <input type="password" class="pin-input" id="newPinInput" maxlength="6" placeholder="Create PIN" autocomplete="off">
-                    <input type="password" class="pin-input" id="confirmPinInput" maxlength="6" placeholder="Confirm PIN" autocomplete="off">
+                    <input type="password" class="pin-input" id="newPinInput" maxlength="6" placeholder="Create PIN"
+                        autocomplete="off">
+                    <input type="password" class="pin-input" id="confirmPinInput" maxlength="6"
+                        placeholder="Confirm PIN" autocomplete="off">
                 </div>
             </div>
             <div class="modal-footer">
@@ -203,7 +222,7 @@
                 </div>
                 <button class="btn btn-success btn-full" id="addMemberBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
                     </svg>
                     Add Member
                 </button>
@@ -222,14 +241,16 @@
                 <h3 class="section-title">Data Management</h3>
                 <button class="btn btn-secondary btn-full" id="importBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     Import Data (JSON)
                 </button>
                 <input type="file" id="importFileInput" accept=".json" style="display:none">
                 <button class="btn btn-danger btn-full" id="resetAllBtn" style="margin-top:8px">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     Reset All Data
                 </button>
@@ -245,6 +266,16 @@
                     <input type="password" id="newAdminPin" class="form-input" placeholder="New PIN" maxlength="6">
                 </div>
                 <button class="btn btn-secondary btn-full" id="changePinBtn">Change PIN</button>
+            </div>
+
+            <!-- Logout -->
+            <div class="admin-section">
+                <button class="btn btn-danger btn-full" id="logoutAdminBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Logout
+                </button>
             </div>
         </div>
     </aside>
@@ -281,4 +312,5 @@
     <script src="firebase-config.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

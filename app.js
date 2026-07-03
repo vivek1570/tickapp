@@ -428,6 +428,13 @@
         document.getElementById('monthlyAmountInput').value = state.settings.monthlyAmount;
         renderAdminMembers();
     }
+    function logoutAdmin() {
+        state.isAdmin = false;
+        closeAdminSidebar();
+        addLog('admin', 'Admin logged out');
+        showToast('Logged out of admin mode', 'info');
+        updateAdminUI();
+    }
     function closeAdminSidebar() {
         document.getElementById('adminSidebar').classList.remove('active');
         document.getElementById('adminOverlay').classList.remove('active');
@@ -436,7 +443,7 @@
     function updateAdminUI() {
         const btn = document.getElementById('adminToggleBtn');
         if (state.isAdmin) {
-            btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="btn-label">Logout</span>';
+            btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="btn-label">Admin Panel</span>';
         } else {
             btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="btn-label">Admin</span>';
         }
@@ -553,11 +560,7 @@
         // Admin toggle
         document.getElementById('adminToggleBtn').addEventListener('click', () => {
             if (state.isAdmin) {
-                state.isAdmin = false;
-                closeAdminSidebar();
-                addLog('admin', 'Admin logged out');
-                showToast('Logged out of admin mode', 'info');
-                updateAdminUI();
+                openAdminSidebar();
             } else {
                 openPinModal();
             }
@@ -621,6 +624,7 @@
 
         // Change PIN
         document.getElementById('changePinBtn').addEventListener('click', changePin);
+        document.getElementById('logoutAdminBtn').addEventListener('click', logoutAdmin);
 
         // Activity Log
         document.getElementById('activityLogBtn').addEventListener('click', openLogModal);
